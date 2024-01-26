@@ -38,3 +38,8 @@ export type dirPath = Record<string, FileType>
 export type rawFile = string | File | Record<string, any> | FileType
 
 export type rawDir = Record<string, rawFile>
+
+export interface FileInfoWithMd5 {
+    path: string
+    md5: string
+}

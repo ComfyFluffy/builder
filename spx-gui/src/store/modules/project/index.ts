@@ -19,7 +19,7 @@ import { useBackdropStore } from '../backdrop'
 import Backdrop from '@/class/backdrop'
 import Sprite from '@/class/sprite'
 import Sound from '@/class/sound'
-import type { projectType, dirPath, FileType, rawDir, rawFile, codeType } from '@/types/file'
+import type { projectType, dirPath, FileType, rawDir, rawFile, codeType, FileInfoWithMd5 } from '@/types/file'
 
 const UNTITLED_NAME = 'Untitled'
 const ENTRY_FILE_NAME = 'index.gmx'
@@ -477,6 +477,27 @@ export const useProjectStore = defineStore('project', () => {
         return project
     }
 
+    async function walkDirToGetMd5(prefix: string): Promise<FileInfoWithMd5[]> {
+        async function getMd5Hash(arrayBuffer: ArrayBuffer): Promise<string> {
+            const data = new Uint8Array(arrayBuffer);
+            const hashBuffer = await crypto.subtle.digest('MD5', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            return hashHex;
+        }
+
+        const fileMap = await getDirPathFromLocal(prefix)
+        if (!fileMap) return []
+
+        const fileInfos: FileInfoWithMd5[] = []
+        for (const [path, file] of Object.entries(fileMap)) {
+            const md5 = await getMd5Hash(file.content)
+            fileInfos.push({ path, md5 })
+        }
+        return fileInfos
+    }
+
+
     /**
      * Get all local project from IndexedDB (localForage).
      * @returns {Promise<string[]>}
@@ -547,6 +568,7 @@ export const useProjectStore = defineStore('project', () => {
         genEntryCode,
         getDirPathFromZip,
         getDirPathFromLocal,
+        walkDirToGetMd5,
         convertProjectToZip,
         convertRawDirToZip,
         saveToComputerByDirPath,
