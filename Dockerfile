@@ -53,5 +53,4 @@ EXPOSE 80
 
 COPY --from=go-builder /app/spx-backend/cmd/spx-backend /usr/local/bin/spx-backend
 
-# CMD ["nginx", "-g", "daemon off;"]
-CMD spx-backend & nginx -g "daemon off;"
+CMD spx-backend & nginx -g "daemon off;" & wait
