@@ -15,10 +15,10 @@ COPY tools ./tools
 COPY spx-backend ./spx-backend
 
 WORKDIR /app/tools/fmt
-RUN ./build.sh
+RUN ./build.sh && ls .
 
 WORKDIR /app/tools/ispx
-RUN ./build.sh
+RUN ./build.sh && ls .
 
 # Build backend
 WORKDIR /app/spx-backend/cmd
@@ -35,7 +35,7 @@ RUN npm install
 COPY spx-gui .
 # Required to resolve symlinks
 COPY tools ../tools
-
+RUN ls /app/spx-gui/src/assets/
 COPY --from=go-builder /app/tools/fmt/static/main.wasm /app/spx-gui/src/assets/format.wasm
 COPY --from=go-builder /app/tools/ispx/main.wasm /app/spx-gui/assets/ispx/main.wasm
 
