@@ -35,9 +35,9 @@ RUN npm install
 COPY spx-gui .
 # Required to resolve symlinks
 COPY tools ../tools
-RUN ls /app/spx-gui/src/assets/
 COPY --from=go-builder /app/tools/fmt/static/main.wasm /app/spx-gui/src/assets/format.wasm
 COPY --from=go-builder /app/tools/ispx/main.wasm /app/spx-gui/assets/ispx/main.wasm
+RUN ls -l /app/spx-gui/src/assets/
 
 RUN npm run build
 
