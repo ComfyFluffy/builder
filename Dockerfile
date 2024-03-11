@@ -33,6 +33,7 @@ COPY spx-gui/package.json spx-gui/package-lock.json ./
 RUN npm install
 
 COPY spx-gui .
+# Required to resolve symlinks
 COPY tools ../tools
 
 COPY --from=go-builder /app/tools/fmt/static/main.wasm /app/spx-gui/src/assets/format.wasm
