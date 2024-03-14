@@ -9,13 +9,28 @@
 <template>
   <div id="code-editor" ref="code_editor"></div>
 </template>
+<script lang="ts">
+import 'vfonts/Lato.css'
+import 'vfonts/FiraCode.css'
+import {
+  KeyCode,
+  KeyMod,
+  MarkerSeverity,
+  Position,
+  languages,
+  editor as monacoEditor
+} from 'monaco-editor'
 
+register()
+</script>
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref, watch, withDefaults } from 'vue'
-import { monaco, type CodeEditorProps, type CodeEditorEmits, type FormatResponse } from './index'
+
+import { type CodeEditorProps, type CodeEditorEmits, type FormatResponse } from './index'
 import EditorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
-import { editorOptions } from './index'
 import { formatSpxCode as onlineFormatSpxCode } from '@/api/project'
+import { editorOptions } from './language'
+import { register } from './register'
 // ----------props & emit------------------------------------
 const prop = withDefaults(defineProps<CodeEditorProps>(), {
   modelValue: '',
@@ -34,12 +49,12 @@ self.MonacoEnvironment = {
 // code_editor's dom
 const code_editor = ref<HTMLElement | null>(null)
 //  editor instance
-let editor: monaco.editor.IStandaloneCodeEditor
+let editor: monacoEditor.IStandaloneCodeEditor
 
 // ----------hooks-----------------------------------------
 // init editor and register change event
 onMounted(() => {
-  editor = monaco.editor.create(code_editor.value as HTMLElement, {
+  editor = monacoEditor.create(code_editor.value as HTMLElement, {
     value: prop.modelValue, // set the initial value of the editor
     theme: 'myTransparentTheme',
     ...editorOptions,
@@ -50,10 +65,8 @@ onMounted(() => {
   editor.addAction({
     id: 'format',
     label: 'Format Code',
-    keybindings: [
-      monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyL,
-    ],
-    contextMenuGroupId: "navigation",
+    keybindings: [KeyMod.CtrlCmd | KeyCode.KeyL],
+    contextMenuGroupId: 'navigation',
     run: format
   })
 
@@ -91,7 +104,7 @@ watch(
 
 /**
  * @description: editor's value change event, emit change event
- * @param {*} monaco.editor.IModelContentChangedEvent
+ * @param {*} editor.IModelContentChangedEvent
  * @return {*}
  * @Author: Zhang Zhi Yang
  * @Date: 2024-01-31 13:45:55
@@ -103,18 +116,18 @@ const onEditorValueChange = () => {
 
 /**
  * @description: After the user has obtained the component, user can insert the code snippet through the exported function
- * @param {*} fn () => { position: monaco.Position;snippet: monaco.languages.CompletionItem})
+ * @param {*} fn () => { position: Position;snippet: languages.CompletionItem})
  * @return {*}
  * @Author: Zhang Zhi Yang
  * @Date: 2024-01-31 13:46:49
  */
-const insertSnippet = (snippet: monaco.languages.CompletionItem, position?: monaco.Position) => {
+const insertSnippet = (snippet: languages.CompletionItem, position?: Position) => {
   if (position) {
     editor.setPosition(position)
   }
   let contribution = editor.getContribution(
     'snippetController2'
-  ) as monaco.editor.IEditorContribution
+  ) as monacoEditor.IEditorContribution
   // @ts-ignore
   contribution.insert(snippet.insertText)
   editor.focus()
@@ -139,10 +152,10 @@ const format = async () => {
   if (forRes.Body) {
     editor.setValue(forRes.Body)
   } else {
-    monaco.editor.setModelMarkers(editor.getModel() as monaco.editor.ITextModel, 'owner', [
+    monacoEditor.setModelMarkers(editor.getModel()!, 'owner', [
       {
         message: forRes.Error.Msg,
-        severity: monaco.MarkerSeverity.Warning,
+        severity: MarkerSeverity.Warning,
         startLineNumber: forRes.Error.Line,
         startColumn: forRes.Error.Column,
         endLineNumber: forRes.Error.Column,

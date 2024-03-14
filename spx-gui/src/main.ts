@@ -8,7 +8,6 @@
  */
 import { createApp } from 'vue'
 import App from './App.vue'
-import { initAssets, initCodeEditor } from './plugins'
 import { initRouter } from '@/router/index'
 import { initI18n } from '@/language'
 import { addFileUrl } from './util/file'
@@ -31,7 +30,6 @@ async function initApp() {
   // loading.mount('#appLoading');
 
   // Give priority to loading css,js resources
-  initAssets()
   addFileUrl()
 
   const app = createApp(App)
@@ -39,7 +37,6 @@ async function initApp() {
   initStore(app)
   initServive()
   await initRouter(app)
-  await initCodeEditor()
 
   await initI18n(app)
 

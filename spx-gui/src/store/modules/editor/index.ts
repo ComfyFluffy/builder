@@ -7,10 +7,9 @@
  * @Description:
  */
 import { defineStore } from 'pinia'
-import { monaco } from '@/components/code-editor'
 import { ref, watch } from 'vue'
 import { useSpriteStore } from '@/store'
-import {} from 'fs'
+import type { languages } from 'monaco-editor'
 export enum EditContentType {
   Sprite = 1,
   EntryCode = 2
@@ -22,7 +21,7 @@ export const useEditorStore = defineStore('editor', () => {
   watch(
     () => spriteStore.current,
     () => {
-      if(spriteStore.current){
+      if (spriteStore.current) {
         setEditContentType(EditContentType.Sprite)
       }
     }
@@ -36,7 +35,7 @@ export const useEditorStore = defineStore('editor', () => {
    * @author Zhang zhi yang
    */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const insertSnippet = (snippet: monaco.languages.CompletionItem) => {
+  const insertSnippet = (snippet: languages.CompletionItem) => {
     // This function is notify code-editor component's insert Function
   }
   const setEditContentType = (type: EditContentType) => {

@@ -8,7 +8,13 @@
 -->
 <template>
   <div class="toolbox">
-    <n-tabs type="line" add-tab-style="color:#a3a3a4" animated placement="left" style="height: 240px">
+    <n-tabs
+      type="line"
+      add-tab-style="color:#a3a3a4"
+      animated
+      placement="left"
+      style="height: 240px"
+    >
       <n-tab-pane
         v-for="item in completionToolbox"
         :key="item.label"
@@ -28,17 +34,17 @@
   </div>
 </template>
 <script setup lang="ts">
-import {
-  monaco,
-  motionSnippets,
-  eventSnippets,
-  lookSnippets,
-  controlSnippets,
-  soundSnippets
-} from '@/components/code-editor'
 import { NButton, NTabs, NTabPane } from 'naive-ui'
 import { useEditorStore } from '@/store'
 import { toRaw, ref } from 'vue'
+import {
+  controlSnippets,
+  eventSnippets,
+  lookSnippets,
+  motionSnippets,
+  soundSnippets
+} from '../code-editor/snippet'
+import type { languages } from 'monaco-editor'
 const store = useEditorStore()
 console.log(motionSnippets)
 let completionToolbox = ref([
@@ -64,7 +70,7 @@ let completionToolbox = ref([
   }
 ])
 // dispatch insertCode
-const insertCode = (snippet: monaco.languages.CompletionItem) => {
+const insertCode = (snippet: languages.CompletionItem) => {
   console.log(snippet)
   store.insertSnippet(snippet)
 }
@@ -78,7 +84,7 @@ const insertCode = (snippet: monaco.languages.CompletionItem) => {
   margin-right: 3px;
 }
 
-.n-tabs .n-tabs-tab{
-  color:#a4a4a3;
+.n-tabs .n-tabs-tab {
+  color: #a4a4a3;
 }
 </style>

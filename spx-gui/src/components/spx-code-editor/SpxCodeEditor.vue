@@ -17,11 +17,13 @@
 </template>
 
 <script setup lang="ts">
-import CodeEditor, { monaco } from '@/components/code-editor'
 import { ref, computed } from 'vue'
 import { EditContentType, useEditorStore, useProjectStore } from '@/store'
 import { useSpriteStore } from '@/store/modules/sprite'
 import { NButton } from 'naive-ui'
+import CodeEditor from '../code-editor/CodeEditor.vue'
+import type { languages } from 'monaco-editor'
+
 const projectStore = useProjectStore()
 const spriteStore = useSpriteStore()
 const editorStore = useEditorStore()
@@ -52,7 +54,7 @@ const format = () => {
 }
 
 // Listen for insert events triggered by store, registered with store.$onAction
-const triggerInsertSnippet = (snippet: monaco.languages.CompletionItem) => {
+const triggerInsertSnippet = (snippet: languages.CompletionItem) => {
   code_editor.value.insertSnippet(snippet)
 }
 
@@ -60,7 +62,7 @@ const triggerInsertSnippet = (snippet: monaco.languages.CompletionItem) => {
 editorStore.$onAction(({ name, args, after }) => {
   after(() => {
     if (name === 'insertSnippet') {
-      const snippet = args[0] as monaco.languages.CompletionItem
+      const snippet = args[0] as languages.CompletionItem
       triggerInsertSnippet(snippet)
     }
   })
