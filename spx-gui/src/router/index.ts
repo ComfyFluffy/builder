@@ -31,11 +31,6 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('../components/stage-viewer-demo/StageViewerDemo.vue')
   },
   {
-    path: '/runner/widget/:id',
-    name: 'SpxRunner',
-    component: () => import('../widgets/widget/spx-runner/SpxRunnerDemo.vue')
-  },
-  {
     path: '/editor/homepage',
     name: 'EditorHomepage',
     component: () => import('../view/EditorHomepage.vue')
